@@ -1,0 +1,21 @@
+# 로컬 테스트 또는 Coolify에서 사용 가능
+# Coolify는 보통 Git 연동 후 Dockerfile로 빌드하므로, 이 파일은 선택 사항입니다.
+
+services:
+  tax:
+    build: .
+    ports:
+      - "4150:4150"
+    environment:
+      - NODE_ENV=production
+      - PORT=4150
+      # 아래는 Coolify/실서비스에서 설정할 환경 변수 예시 (값은 비워두고 설정)
+      - NEXT_PUBLIC_SUPABASE_URL=${NEXT_PUBLIC_SUPABASE_URL}
+      - NEXT_PUBLIC_SUPABASE_ANON_KEY=${NEXT_PUBLIC_SUPABASE_ANON_KEY}
+      - SUPABASE_SERVICE_ROLE_KEY=${SUPABASE_SERVICE_ROLE_KEY}
+      - NEXT_PUBLIC_PLAID_ENV=${NEXT_PUBLIC_PLAID_ENV:-sandbox}
+      - PLAID_CLIENT_ID=${PLAID_CLIENT_ID}
+      - PLAID_SECRET=${PLAID_SECRET}
+      - PLAID_TOKEN_ENCRYPTION_KEY=${PLAID_TOKEN_ENCRYPTION_KEY}
+      - NEXT_PUBLIC_APP_URL=${NEXT_PUBLIC_APP_URL}
+    restart: unless-stopped

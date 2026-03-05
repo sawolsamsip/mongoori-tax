@@ -1,0 +1,31 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: hsl(0 0% 100%);
+  --foreground: hsl(222 47% 11%);
+  --border: hsl(214 32% 91%);
+  --primary: hsl(222 47% 11%);
+  --primary-foreground: hsl(210 40% 98%);
+  --muted: hsl(210 40% 96%);
+  --muted-foreground: hsl(216 12% 42%);
+  --accent: hsl(210 40% 96%);
+  --accent-foreground: hsl(222 47% 11%);
+}
+
+.dark {
+  --background: hsl(222 47% 6%);
+  --foreground: hsl(210 40% 98%);
+  --border: hsl(217 33% 17%);
+  --primary: hsl(210 40% 98%);
+  --primary-foreground: hsl(222 47% 11%);
+  --muted: hsl(217 33% 17%);
+  --muted-foreground: hsl(215 20% 65%);
+  --accent: hsl(217 33% 17%);
+  --accent-foreground: hsl(210 40% 98%);
+}
+
+body {
+  @apply bg-background text-foreground antialiased;
+}

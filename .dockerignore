@@ -1,0 +1,32 @@
+# 의존성은 컨테이너에서 설치
+node_modules
+.pnp
+.pnp.js
+npm-debug.log*
+
+# 빌드 산출물
+.next
+out
+*.tsbuildinfo
+next-env.d.ts
+
+# 환경/로컬 설정 (Coolify에서 별도 주입)
+.env
+.env.*
+!.env.example
+
+# Git
+.git
+.gitignore
+
+# IDE / OS
+.DS_Store
+*.pem
+.idea
+.vscode
+
+# 문서/기타 (이미지 용량 절약)
+README.md
+PHASES.md
+*.md
+!README.md
