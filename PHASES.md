@@ -5,7 +5,7 @@ AI bookkeeping & tax-prep for US freelancers/LLC/S-Corp (Irvine, CA).
 
 ---
 
-## Phase 1: Setup + Plaid ✅ (current)
+## Phase 1: Setup + Plaid ✅
 
 - [x] Next.js 15 + Tailwind + TypeScript scaffold
 - [x] Supabase: auth, PostgreSQL schema, RLS, storage bucket (receipts)
@@ -18,16 +18,19 @@ AI bookkeeping & tax-prep for US freelancers/LLC/S-Corp (Irvine, CA).
 
 ---
 
-## Phase 2: AI Core
+## Phase 2: AI Core ✅ (current)
 
-- Claude (or OpenRouter fallback) for every transaction/receipt
-- Few-shot prompts: IRS Pub 463/535/334 (home office, mileage, supplies, software, meals 50%, travel)
-- Output schema: `{ category, is_deductible, deduction_type, confidence, explanation, estimated_amount }`
-- Custom user rules + overrides (DB table)
-- RAG: embed IRS publications in Supabase pgvector + LangChain for complex cases
-- Receipt/Invoice upload: image/PDF → OCR/Claude Vision → structured output → transaction + deduction check
+- [x] Claude (claude-haiku-4-5) for every unclassified transaction
+- [x] IRS Pub 463/535/334 few-shot prompts (vehicle, phone, insurance, meals 50%, professional fees)
+- [x] Output schema: `{ category, is_deductible, deduction_type, confidence, explanation }`
+- [x] Inline category override via CategorySelect (manual overrides preserved over AI)
+- [x] DeductionSummary: YTD totals per Schedule C category + estimated tax savings
+- [x] Mileage tracker: $0.725/mile (2026 IRS rate), CRUD API + UI (Schedule C Line 9)
+- [x] DB: ai_category, ai_confidence, ai_explanation, ai_classified_at columns + mileage_logs table
+- [ ] RAG: IRS publications in pgvector (Phase 3+)
+- [ ] Receipt/Invoice OCR via Claude Vision (Phase 3+)
 
-**Deliverables:** Auto-categorization, deduction detection with IRS references, receipt parsing.
+**Deliverables:** AI auto-categorization (✦ badge), Schedule C deduction dashboard, mileage tracker, manual override UI.
 
 ---
 

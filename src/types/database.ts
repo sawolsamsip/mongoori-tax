@@ -1,6 +1,5 @@
 /**
- * Database types for Supabase tables (Phase 1).
- * Extend as we add columns (e.g. category_override, is_deductible in Phase 2).
+ * Database types for Supabase tables (Phase 1 + Phase 2).
  */
 
 export type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[];
@@ -52,6 +51,30 @@ export interface Transaction {
   is_deductible: boolean | null;
   deduction_type: string | null;
   notes: string | null;
+  // Phase 2: AI classification
+  ai_category: string | null;
+  ai_confidence: number | null;
+  ai_explanation: string | null;
+  ai_classified_at: string | null;
   created_at: string;
   updated_at: string;
+}
+
+export interface MileageLog {
+  id: string;
+  user_id: string;
+  date: string;
+  miles: number;
+  purpose: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface ClassificationRule {
+  id: string;
+  user_id: string;
+  keyword: string;
+  schedule_c_category: string;
+  is_deductible: boolean;
+  created_at: string;
 }

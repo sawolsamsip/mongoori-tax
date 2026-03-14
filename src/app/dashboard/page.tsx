@@ -4,6 +4,7 @@ import { TransactionsList } from "@/components/TransactionsList";
 import { SyncButton } from "@/components/SyncButton";
 import { DeductionSummary } from "@/components/DeductionSummary";
 import { YearSelector } from "@/components/YearSelector";
+import { ClassifyButton } from "@/components/ClassifyButton";
 import Link from "next/link";
 import { Suspense } from "react";
 
@@ -51,7 +52,10 @@ export default async function DashboardPage({ searchParams }: PageProps) {
       )}
 
       <section>
-        <h2 className="text-lg font-medium mb-3">Schedule C Deductions — {year}</h2>
+        <div className="flex items-center justify-between mb-3">
+          <h2 className="text-lg font-medium">Schedule C Deductions — {year}</h2>
+          <ClassifyButton />
+        </div>
         <Suspense fallback={<p className="text-sm text-muted-foreground">Loading summary…</p>}>
           <DeductionSummary year={year} />
         </Suspense>

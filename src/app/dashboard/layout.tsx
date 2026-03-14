@@ -20,9 +20,19 @@ export default async function DashboardLayout({
     <div className="min-h-screen bg-background">
       <header className="border-b border-border">
         <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-4">
-          <Link href="/dashboard" className="font-semibold">
-            Tax
-          </Link>
+          <div className="flex items-center gap-6">
+            <Link href="/dashboard" className="font-semibold">
+              Tax
+            </Link>
+            <nav className="hidden sm:flex items-center gap-4 text-sm">
+              <Link href="/dashboard/transactions" className="text-muted-foreground hover:text-foreground transition-colors">
+                Transactions
+              </Link>
+              <Link href="/dashboard/mileage" className="text-muted-foreground hover:text-foreground transition-colors">
+                Mileage
+              </Link>
+            </nav>
+          </div>
           <div className="flex items-center gap-4">
             <span className="text-sm text-muted-foreground">{user.email}</span>
             <SignOutButton />
