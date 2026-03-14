@@ -2,9 +2,19 @@ import { createClient } from "@/lib/supabase/server";
 import { PlaidLinkButton } from "@/components/PlaidLinkButton";
 import { TransactionsList } from "@/components/TransactionsList";
 import { SyncButton } from "@/components/SyncButton";
+import { DeductionSummary } from "@/components/DeductionSummary";
+import { YearSelector } from "@/components/YearSelector";
 import Link from "next/link";
+import { Suspense } from "react";
 
-export default async function DashboardPage() {
+interface PageProps {
+  searchParams: Promise<{ year?: string }>;
+}
+
+export default async function DashboardPage({ searchParams }: PageProps) {
+  const { year: yearParam } = await searchParams;
+  const year = yearParam ? parseInt(yearParam, 10) : new Date().getFullYear();
+
   const supabase = await createClient();
   const { data: items } = await supabase
     .from("plaid_items")
@@ -15,7 +25,12 @@ export default async function DashboardPage() {
     <div className="space-y-8">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <h1 className="text-2xl font-semibold">Dashboard</h1>
-        <PlaidLinkButton />
+        <div className="flex items-center gap-3">
+          <Suspense>
+            <YearSelector current={year} />
+          </Suspense>
+          <PlaidLinkButton />
+        </div>
       </div>
 
       {items && items.length > 0 && (
@@ -36,13 +51,20 @@ export default async function DashboardPage() {
       )}
 
       <section>
+        <h2 className="text-lg font-medium mb-3">Schedule C Deductions — {year}</h2>
+        <Suspense fallback={<p className="text-sm text-muted-foreground">Loading summary…</p>}>
+          <DeductionSummary year={year} />
+        </Suspense>
+      </section>
+
+      <section>
         <div className="flex items-center justify-between mb-2">
           <h2 className="text-lg font-medium">Recent transactions</h2>
-          <Link href="/dashboard/transactions" className="text-sm text-primary hover:underline">
+          <Link href={`/dashboard/transactions?year=${year}`} className="text-sm text-primary hover:underline">
             View all
           </Link>
         </div>
-        <TransactionsList limit={20} />
+        <TransactionsList limit={20} year={year} />
       </section>
     </div>
   );

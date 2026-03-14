@@ -1,12 +1,28 @@
 import { createClient } from "@/lib/supabase/server";
+import { autoClassify, effectiveCategory, ScheduleCCategory } from "@/lib/schedule-c";
+import { CategorySelect } from "./CategorySelect";
 
-export async function TransactionsList({ limit = 50 }: { limit?: number }) {
+interface Props {
+  limit?: number;
+  year?: number;
+}
+
+export async function TransactionsList({ limit = 50, year }: Props) {
   const supabase = await createClient();
-  const { data: transactions, error } = await supabase
+
+  let query = supabase
     .from("transactions")
-    .select("id, date, name, merchant_name, amount, currency, category_plaid")
+    .select(
+      "id, date, name, merchant_name, amount, currency, category_plaid, deduction_type, ai_category, ai_confidence"
+    )
     .order("date", { ascending: false })
     .limit(limit);
+
+  if (year) {
+    query = query.gte("date", `${year}-01-01`).lte("date", `${year}-12-31`);
+  }
+
+  const { data: transactions, error } = await query;
 
   if (error) {
     return (
@@ -30,28 +46,46 @@ export async function TransactionsList({ limit = 50 }: { limit?: number }) {
             <th className="px-4 py-2 text-left font-medium">Date</th>
             <th className="px-4 py-2 text-left font-medium">Merchant</th>
             <th className="px-4 py-2 text-right font-medium">Amount</th>
-            <th className="px-4 py-2 text-left font-medium">Category</th>
+            <th className="px-4 py-2 text-left font-medium">IRS Category</th>
           </tr>
         </thead>
         <tbody>
-          {transactions.map((t) => (
-            <tr key={t.id} className="border-t border-border">
-              <td className="px-4 py-2 text-muted-foreground">{t.date}</td>
-              <td className="px-4 py-2">{t.merchant_name ?? t.name ?? "—"}</td>
-              <td className="px-4 py-2 text-right font-medium">
-                {t.amount >= 0 ? "+" : ""}
-                {new Intl.NumberFormat("en-US", {
-                  style: "currency",
-                  currency: t.currency,
-                }).format(Number(t.amount))}
-              </td>
-              <td className="px-4 py-2 text-muted-foreground">
-                {t.category_plaid?.join(", ") ?? "—"}
-              </td>
-            </tr>
-          ))}
+          {transactions.map((t) => {
+            // Precedence: manual override > AI classification > rule-based Plaid mapping
+            const aiCategory = t.ai_category as ScheduleCCategory | null;
+            const auto: ScheduleCCategory | null =
+              aiCategory ?? autoClassify(t.category_plaid);
+            return (
+              <tr key={t.id} className="border-t border-border">
+                <td className="px-4 py-2 text-muted-foreground">{t.date}</td>
+                <td className="px-4 py-2">{t.merchant_name ?? t.name ?? "—"}</td>
+                <td className="px-4 py-2 text-right font-medium">
+                  {t.amount >= 0 ? "+" : ""}
+                  {new Intl.NumberFormat("en-US", {
+                    style: "currency",
+                    currency: t.currency,
+                  }).format(Number(t.amount))}
+                </td>
+                <td className="px-4 py-2">
+                  <CategorySelect
+                    transactionId={t.id}
+                    current={t.deduction_type as ScheduleCCategory | null}
+                    auto={auto}
+                    aiConfidence={
+                      aiCategory && t.ai_confidence != null
+                        ? Number(t.ai_confidence)
+                        : null
+                    }
+                  />
+                </td>
+              </tr>
+            );
+          })}
         </tbody>
       </table>
+      <p className="px-4 py-2 text-xs text-muted-foreground border-t border-border">
+        * Auto-classified (AI or rule-based) — use dropdown to override
+      </p>
     </div>
   );
 }
