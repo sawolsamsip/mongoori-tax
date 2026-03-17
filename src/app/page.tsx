@@ -3,12 +3,14 @@ import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 
 export default async function HomePage() {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (user) {
-    redirect("/dashboard");
+  if (process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+    const supabase = await createClient();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (user) {
+      redirect("/dashboard");
+    }
   }
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-6 bg-muted/30">
