@@ -1,11 +1,14 @@
 /**
  * POST /api/ai/classify
  * Batch-classify all unclassified transactions for the authenticated user.
+ * Requires Premium tier (or active trial / mongoori_rider).
  */
 
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { classifyTransactionsBatch } from "@/lib/ai/classify";
+import { isPremium } from "@/lib/tier";
+import type { Profile } from "@/types/database";
 
 export async function POST() {
   const supabase = await createClient();
@@ -15,6 +18,20 @@ export async function POST() {
 
   if (!user) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  // Tier gate: AI classification is a Premium feature
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("*")
+    .eq("id", user.id)
+    .single();
+
+  if (!profile || !isPremium(profile as Profile)) {
+    return NextResponse.json(
+      { error: "upgrade_required", message: "AI classification requires Premium." },
+      { status: 403 }
+    );
   }
 
   // Fetch transactions not yet AI-classified (expenses only: amount < 0)

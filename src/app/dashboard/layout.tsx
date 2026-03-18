@@ -31,6 +31,9 @@ export default async function DashboardLayout({
               <Link href="/dashboard/mileage" className="text-muted-foreground hover:text-foreground transition-colors">
                 Mileage
               </Link>
+              <Link href="/dashboard/billing" className="text-muted-foreground hover:text-foreground transition-colors">
+                Billing
+              </Link>
             </nav>
           </div>
           <div className="flex items-center gap-4">

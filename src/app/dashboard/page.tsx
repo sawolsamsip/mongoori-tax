@@ -7,6 +7,8 @@ import { YearSelector } from "@/components/YearSelector";
 import { ClassifyButton } from "@/components/ClassifyButton";
 import Link from "next/link";
 import { Suspense } from "react";
+import { isPremium } from "@/lib/tier";
+import type { Profile } from "@/types/database";
 
 interface PageProps {
   searchParams: Promise<{ year?: string }>;
@@ -17,10 +19,12 @@ export default async function DashboardPage({ searchParams }: PageProps) {
   const year = yearParam ? parseInt(yearParam, 10) : new Date().getFullYear();
 
   const supabase = await createClient();
-  const { data: items } = await supabase
-    .from("plaid_items")
-    .select("id, institution_name, created_at")
-    .order("created_at", { ascending: false });
+  const [{ data: items }, { data: profile }] = await Promise.all([
+    supabase.from("plaid_items").select("id, institution_name, created_at").order("created_at", { ascending: false }),
+    supabase.from("profiles").select("*").single(),
+  ]);
+
+  const userIsPremium = profile ? isPremium(profile as Profile) : false;
 
   return (
     <div className="space-y-8">
@@ -54,7 +58,7 @@ export default async function DashboardPage({ searchParams }: PageProps) {
       <section>
         <div className="flex items-center justify-between mb-3">
           <h2 className="text-lg font-medium">Schedule C Deductions — {year}</h2>
-          <ClassifyButton />
+          <ClassifyButton isPremium={userIsPremium} />
         </div>
         <Suspense fallback={<p className="text-sm text-muted-foreground">Loading summary…</p>}>
           <DeductionSummary year={year} />

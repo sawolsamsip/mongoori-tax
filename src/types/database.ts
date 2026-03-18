@@ -4,11 +4,34 @@
 
 export type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[];
 
+export type SubscriptionTier = 'free' | 'premium' | 'mongoori_rider';
+
 export interface Profile {
   id: string;
   email: string | null;
   full_name: string | null;
   avatar_url: string | null;
+  // Phase 3: freemium
+  subscription_tier: SubscriptionTier;
+  subscription_expires_at: string | null;
+  stripe_customer_id: string | null;
+  stripe_subscription_id: string | null;
+  premium_trial_ends_at: string | null;
+  is_mongoori_rider: boolean;
+  mongoori_rider_booking_id: string | null;
+  mongoori_rider_rental_end: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface PendingRider {
+  id: string;
+  email: string;
+  booking_id: string | null;
+  rental_end_date: string;
+  premium_until: string;
+  invite_sent_at: string | null;
+  claimed_at: string | null;
   created_at: string;
   updated_at: string;
 }
