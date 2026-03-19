@@ -34,6 +34,9 @@ export default async function HomePage() {
           </Link>
         </div>
       </div>
+      <p className="mt-10 max-w-md text-center text-xs text-muted-foreground/70 px-4">
+        For informational purposes only. mongoori Tax is not a licensed tax preparation service and does not provide professional tax advice. Consult a licensed CPA or tax professional for your specific tax situation.
+      </p>
     </div>
   );
 }

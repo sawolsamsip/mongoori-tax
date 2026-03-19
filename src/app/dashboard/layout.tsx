@@ -43,6 +43,13 @@ export default async function DashboardLayout({
         </div>
       </header>
       <main className="mx-auto max-w-6xl px-4 py-6">{children}</main>
+      <footer className="border-t border-border mt-8">
+        <div className="mx-auto max-w-6xl px-4 py-4">
+          <p className="text-xs text-muted-foreground/70 text-center">
+            For informational purposes only. mongoori Tax is not a licensed tax preparation service and does not provide professional tax advice. Consult a licensed CPA or tax professional for your specific tax situation.
+          </p>
+        </div>
+      </footer>
     </div>
   );
 }

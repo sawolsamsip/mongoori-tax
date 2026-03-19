@@ -108,6 +108,9 @@ export default function SignUpPage() {
             Sign in
           </Link>
         </p>
+        <p className="text-xs text-muted-foreground/70 border-t border-border pt-4">
+          For informational purposes only. mongoori Tax is not a licensed tax preparation service and does not provide professional tax advice. Consult a licensed CPA or tax professional for your specific tax situation.
+        </p>
       </div>
     </div>
   );
